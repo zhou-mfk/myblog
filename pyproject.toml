@@ -9,6 +9,8 @@ license = "MIT license"
 [tool.poetry.dependencies]
 python = "^3.11"
 flask = "^3.0.3"
+flask-script = "^2.0.6"
+flask-migrate = "^4.0.7"
 
 
 [build-system]
