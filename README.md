@@ -72,3 +72,14 @@ grant all privilege on myblog.* to admin@'%';
 grant all privilege on test_myblog.* to admin@'%';
 
 ```
+
+### flask command
+
+```shell
+# in fish
+set FALSK_APP wsgi.py
+```
+
+```shell
+flask run
+```
