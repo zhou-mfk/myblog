@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 from config import config
 
+from .blog import bp as blog_bp
+
 db = SQLAlchemy()
 
 
@@ -19,5 +21,6 @@ def create_app(config_name: None):
     db.init_app(app)
 
     # 注册蓝图
+    app.register_blueprint(blog_bp)
 
     return app
