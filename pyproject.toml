@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "myblog"
+version = "0.1.0"
+description = ""
+authors = ["zhou_mfk <zhou_mfk@163.com>"]
+readme = "README.md"
+license = "MIT license"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+flask = "^3.0.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[[tool.poetry.source]]
+name = "tsinghua"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"
+priority = "primary"
