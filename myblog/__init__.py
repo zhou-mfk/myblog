@@ -1,11 +1,10 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 
 from config import config
 
-from .blog import bp as blog_bp
-
-db = SQLAlchemy()
+from . import blog
+from .ext import db, migrate
+from .models import post, user
 
 
 def create_app(config_name: None):
@@ -19,8 +18,10 @@ def create_app(config_name: None):
 
     # 引入扩展
     db.init_app(app)
+    migrate.init_app(app, db)
 
     # 注册蓝图
-    app.register_blueprint(blog_bp)
+    app.register_blueprint(blog.bp)
+    app.add_url_rule("/", endpoint="index")
 
     return app

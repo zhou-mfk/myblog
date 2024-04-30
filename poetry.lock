@@ -124,24 +124,6 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
-name = "flask-script"
-version = "2.0.6"
-description = "Scripting support for Flask"
-optional = false
-python-versions = "*"
-files = [
-    {file = "Flask-Script-2.0.6.tar.gz", hash = "sha256:6425963d91054cfcc185807141c7314a9c5ad46325911bd24dcb489bd0161c65"},
-]
-
-[package.dependencies]
-Flask = "*"
-
-[package.source]
-type = "legacy"
-url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
-reference = "tsinghua"
-
-[[package]]
 name = "flask-sqlalchemy"
 version = "3.1.1"
 description = "Add SQLAlchemy support to your Flask application."
@@ -526,4 +508,4 @@ reference = "tsinghua"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "59f4b8e09888bd2d3da9555c8684a39a060c16a2ea5046e0406f53a08cf0accc"
+content-hash = "e5e0bc32f019bfebd4cfffaa51d5246534f4ead2f60ecdaaf962e6e37e857832"

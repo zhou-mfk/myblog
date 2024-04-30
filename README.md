@@ -83,3 +83,16 @@ set FALSK_APP wsgi.py
 ```shell
 flask run
 ```
+
+### flask migrate
+
+```shell
+# 初始化
+flask db init
+# migrate
+flask db migrate
+# upgrade  进行写入数据库
+flask db upgrade
+
+flask db edit # 对迁移文件进行修改 因在migrate 之后不能通过修改model的属性来调整migrate文件的
+```
