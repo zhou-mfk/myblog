@@ -1,9 +1,10 @@
 import datetime
-from typing import Any, Dict
+from typing import Dict, List
 
 from sqlalchemy import ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing_extensions import Annotated
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from .ext import db
 
@@ -33,33 +34,49 @@ class BaseModel(db.Model):
         except Exception:
             db.session.rollback()
 
-    @classmethod
-    def update(cls, data: Dict):
-        cls.update(**data)
-        db.session.add(cls)
-        try:
-            db.session.commit()
-        except Exception:
-            db.session.rollback()
+    def update(self, data: Dict) -> None:
+        if data:
+            fields = [x for x in self.__dict__.keys() if not x.startswith("_")]
+            for k, v in data.items():
+                if k not in fields:
+                    print(f"WARN: Field `{k}` may not be saved!")
+                else:
+                    if k == "password":
+                        v = generate_password_hash(v)
+                    setattr(self, k, v)
+            try:
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
 
 
 class User(BaseModel):
-    __tablename__ = "user"
+    __tablename__ = "users"
 
     username: Mapped[str] = mapped_column(String(128), doc="用户", nullable=True)
     email: Mapped[str] = mapped_column(String(128))
+    password: Mapped[str] = mapped_column(Text, nullable=False)
 
-    def __init__(self, *kwargs) -> None:
-        super().__init__()
+    posts: Mapped[List["Post"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan"
+    )
+
+    def __init__(self, **kwargs) -> None:
         self.username = kwargs.get("username")
         self.email = kwargs.get("email")
+        self.password = generate_password_hash(kwargs.get("password"))
 
 
 class Post(BaseModel):
-    __tablename__ = "post"
+    __tablename__ = "posts"
 
-    user_id = mapped_column(ForeignKey("user.id"))
-    title = mapped_column(Text)
-    body = mapped_column(Text)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    title: Mapped[str] = mapped_column(Text)
+    body: Mapped[str] = mapped_column(Text)
 
     user: Mapped["User"] = relationship(back_populates="posts")
+
+    def __init__(self, **kwargs) -> None:
+        self.user_id = int(kwargs.get("user_id"))
+        self.title = kwargs.get("title")
+        self.body = kwargs.get("body")
