@@ -4,7 +4,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .ext import db
 
 
-class user(db.Model):
+class User(db.Model):
     __tablename__ = "user"
 
     id: Mapped[int] = mapped_column(primary_key=True, doc="用户id")
@@ -12,7 +12,7 @@ class user(db.Model):
     email: Mapped[str] = mapped_column(String(128))
 
 
-class post(db.Model):
+class Post(db.Model):
     __tablename__ = "post"
 
     id: Mapped[int] = mapped_column(primary_key=True, doc="文章id")
@@ -20,4 +20,4 @@ class post(db.Model):
     title = mapped_column(Text)
     body = mapped_column(Text)
 
-    user: Mapped["user"] = relationship(back_populates="posts")
+    user: Mapped["User"] = relationship(back_populates="posts")

@@ -4,7 +4,7 @@ from config import config
 
 from . import blog
 from .ext import db, migrate
-from .models import post, user
+from .models import Post, User
 
 
 def create_app(config_name: None):
