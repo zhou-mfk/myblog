@@ -21,3 +21,27 @@ repos:
       - id: isort
         args: ["--profile", "black", "--filter-files"]
         name: isort (python)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.1.8
+    hooks:
+      - id: ruff
+        types: [python]
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.971
+    hooks:
+      - id: mypy
+        types: [python]
+        args: [myblog, tests]
+        language: system
+        pass_filenames: false
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest and coverage
+        entry: poetry run pytest
+        args:
+          - "--cov"
+          - "myblog"
+          - "tests"
+        language: system
+        files: "myblog"
