@@ -10,14 +10,16 @@ def app():
 
     # other setup can go here
     # 创建表
-    db.create_all()
+    with app.app_context():
+        db.create_all()
 
     # TODO: 增加测试数据
 
     yield app
 
     # clean up / reset resources here
-    db.drop_all()
+    with app.app_context():
+        db.drop_all()
 
 
 @pytest.fixture()
