@@ -17,7 +17,7 @@ timestamp = Annotated[
 ]
 
 
-class BaseModel(db.Model):
+class BaseModel(db.Model):  # type: ignore[name-defined]
     """声明基类，用于公共模型, 以及公共查询"""
 
     __abstract__ = True
@@ -25,10 +25,8 @@ class BaseModel(db.Model):
     id: Mapped[intpk]
     created_at: Mapped[timestamp]
 
-    @classmethod
-    def save(cls, data: Dict):
-        new_data = cls(**data)
-        db.session.add(new_data)
+    def save(self):
+        db.session.add(self)
         try:
             db.session.commit()
         except Exception:
@@ -55,16 +53,22 @@ class User(BaseModel):
 
     username: Mapped[str] = mapped_column(String(128), doc="用户", nullable=True)
     email: Mapped[str] = mapped_column(String(128))
-    password: Mapped[str] = mapped_column(Text, nullable=False)
+    password_hash: Mapped[str] = mapped_column(Text, nullable=False)
 
     posts: Mapped[List["Post"]] = relationship(
         back_populates="user", cascade="all, delete-orphan"
     )
 
-    def __init__(self, **kwargs) -> None:
-        self.username = kwargs.get("username")
-        self.email = kwargs.get("email")
-        self.password = generate_password_hash(kwargs.get("password"))
+    @property
+    def password(self):
+        return self.password_hash
+
+    @password.setter
+    def password(self, value):
+        self.password_hash = generate_password_hash(value)
+
+    def validate_password(self, password) -> bool:
+        return check_password_hash(self.password, password)
 
 
 class Post(BaseModel):
@@ -75,8 +79,3 @@ class Post(BaseModel):
     body: Mapped[str] = mapped_column(Text)
 
     user: Mapped["User"] = relationship(back_populates="posts")
-
-    def __init__(self, **kwargs) -> None:
-        self.user_id = int(kwargs.get("user_id"))
-        self.title = kwargs.get("title")
-        self.body = kwargs.get("body")

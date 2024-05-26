@@ -40,6 +40,13 @@ pre-commit install
 
 **.pre-commit-config.yaml** is a config use pre-commit. you can read details.
 
+- black 代码格式化工具
+- isort 包导入顺序
+- ruff python 语法检查
+- mypy python 类型注解检查工具
+- pytest 测试工具
+- coverage 测试覆盖率
+
 ### mysql
 
 mysql command use podman
@@ -85,6 +92,11 @@ set FALSK_APP wsgi.py
 ```shell
 flask run
 ```
+
+### flask-sqlalchemy
+
+使用 flask sqlalchemy ORM 来管理数据库
+mysql 数据库需要依赖 pymysql
 
 ### flask migrate
 

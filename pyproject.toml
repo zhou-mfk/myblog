@@ -12,11 +12,17 @@ flask = "^3.0.3"
 pymysql = "^1.1.0"
 flask-sqlalchemy = "^3.1.1"
 flask-migrate = "^4.0.7"
+types-flask-migrate = "^4.0.0.20240311"
 
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.1"
 coverage = "^7.5.1"
+black = "^24.4.2"
+tox = "^4.15.0"
+ruff = "^0.4.5"
+mypy = "^1.10.0"
+pytest-cov = "^5.0.0"
 
 [build-system]
 requires = ["poetry-core"]
@@ -31,12 +37,11 @@ priority = "primary"
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = "-ra -q"
-testpaths = [
-    "tests",
-]
+testpaths = ["tests"]
 
 [tool.coverage.run]
 branch = true
+disable_warnings = ['no-data-collected']
 
 [tool.coverage.report]
 # Regexes for lines to exclude from consideration
@@ -55,9 +60,16 @@ exclude_also = [
 
     # Don't complain about abstract methods, they aren't run:
     "@(abc\\.)?abstractmethod",
-    ]
+]
 
 ignore_errors = true
 
 [tool.coverage.html]
 directory = "coverage_html_report"
+
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+# exclude = ['^myblog\/\_\_init\_\_\.py$']

@@ -6,3 +6,6 @@ pyc*
 mysql_data
 migrations
 .coverage
+.mypy_cache
+.ruff_cache
+.tox

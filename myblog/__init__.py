@@ -1,3 +1,8 @@
+# 如果导入了未使用则配置在此处
+__all__ = ["Post", "User"]
+
+from typing import Optional
+
 from flask import Flask
 
 from config import config
@@ -7,7 +12,7 @@ from .ext import db, migrate
 from .models import Post, User
 
 
-def create_app(config_name: None):
+def create_app(config_name: Optional[str]):
     # 创建 Flask 程序实例
     app = Flask(__name__)
 
