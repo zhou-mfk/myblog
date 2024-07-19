@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing_extensions import Annotated
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from .ext import db
+from myblog.ext import db
 
 """设置类型映射"""
 

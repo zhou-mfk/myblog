@@ -45,3 +45,4 @@ repos:
           - "tests"
         language: system
         files: "myblog"
+        exclude_types: ["html"]

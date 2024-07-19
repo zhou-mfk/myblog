@@ -13,6 +13,11 @@ pymysql = "^1.1.0"
 flask-sqlalchemy = "^3.1.1"
 flask-migrate = "^4.0.7"
 types-flask-migrate = "^4.0.0.20240311"
+flask-bootstrap = "^3.3.7.1"
+flask-ckeditor = "^1.0.0"
+flask-moment = "^1.0.6"
+flask-wtf = "^1.2.1"
+bleach = "^6.1.0"
 
 
 [tool.poetry.group.dev.dependencies]
