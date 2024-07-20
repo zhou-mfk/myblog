@@ -1,8 +1,8 @@
-__all__ = ["Post", "User"]
+__all__ = ["Post", "Admin", "Category", "Comment"]
 from sqlalchemy import text
 
 from myblog.ext import db
-from myblog.models import Post, User  # type ignore
+from myblog.models import Admin, Category, Comment, Post
 
 
 def test_connect_db(app_ctx):

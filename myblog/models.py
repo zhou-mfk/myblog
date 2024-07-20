@@ -1,5 +1,5 @@
 import datetime
-from typing import Dict, List
+from typing import Dict
 
 from sqlalchemy import ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -48,16 +48,16 @@ class BaseModel(db.Model):  # type: ignore[name-defined]
                 db.session.rollback()
 
 
-class User(BaseModel):
-    __tablename__ = "users"
+class Admin(BaseModel):
 
-    username: Mapped[str] = mapped_column(String(128), doc="用户", nullable=True)
-    email: Mapped[str] = mapped_column(String(128))
-    password_hash: Mapped[str] = mapped_column(Text, nullable=False)
+    __tablename__ = "admin"
 
-    posts: Mapped[List["Post"]] = relationship(
-        back_populates="user", cascade="all, delete-orphan"
-    )
+    username: Mapped[str] = mapped_column(String(20))
+    password_hash: Mapped[str] = mapped_column(String(128))
+    blog_title: Mapped[str] = mapped_column(String(60))
+    blog_sub_title: Mapped[str] = mapped_column(String(100))
+    name: Mapped[str] = mapped_column(String(30))
+    about: Mapped[str] = mapped_column(Text)
 
     @property
     def password(self):
@@ -71,11 +71,41 @@ class User(BaseModel):
         return check_password_hash(self.password, password)
 
 
+class Category(BaseModel):
+    __tablename__ = "category"
+    name: Mapped[str] = mapped_column(String(30), unique=True)
+
+    posts: Mapped["Post"] = relationship(back_populates="category")
+
+
 class Post(BaseModel):
     __tablename__ = "posts"
 
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    title: Mapped[str] = mapped_column(Text)
+    title: Mapped[str] = mapped_column(String(60))
     body: Mapped[str] = mapped_column(Text)
+    # 关联分类
+    category_id: Mapped[int] = mapped_column(ForeignKey("category.id"))
 
-    user: Mapped["User"] = relationship(back_populates="posts")
+    category: Mapped["Category"] = relationship(back_populates="posts")
+    comments: Mapped["Comment"] = relationship(
+        back_populates="post", cascade="all"
+    )  # 级联删除
+
+
+class Comment(BaseModel):
+    __tablename__ = "comments"
+
+    author: Mapped[str] = mapped_column(String(30))
+    email: Mapped[str] = mapped_column(String(254))
+    site: Mapped[str] = mapped_column(String(255))
+    body: Mapped[str] = mapped_column(Text)
+    from_admin: Mapped[bool] = mapped_column(default=False)
+    reviewed: Mapped[bool] = mapped_column(default=False)
+    # 关联文章
+    post_id: Mapped[int] = mapped_column(ForeignKey("posts.id"))
+    post: Mapped["Post"] = relationship(back_populates="comments")
+
+    # 邻接表列关系  即评论的评论
+    replied_id: Mapped[int] = mapped_column(ForeignKey("comments.id"))
+    replieds: Mapped["Comment"] = relationship(back_populates="replied", cascade="all")
+    replied = relationship("Comment", back_populates="replieds", remote_side=[id])  # type: ignore

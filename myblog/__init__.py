@@ -1,5 +1,5 @@
 # 如果导入了未使用则配置在此处
-__all__ = ["Post", "User"]
+__all__ = ["Post", "Admin", "Category", "Comment"]
 
 import click
 from flask import Flask, render_template
@@ -9,7 +9,7 @@ from myblog.blueprints.admin import admin_bp
 from myblog.blueprints.auth import auth_bp
 from myblog.blueprints.blog import blog_bp
 from myblog.ext import bootstrap, ckeditor, db, migrate, moment
-from myblog.models import Post, User
+from myblog.models import Admin, Category, Comment, Post
 
 
 def create_app(config_name: str | None):
@@ -64,27 +64,6 @@ def register_blueprints(app: Flask) -> None:
 
 def register_commands(app: Flask) -> None:
     # 添加用户
-    @app.cli.command
-    @click.option("--username", prompt=True, help="用户名 用于登录使用")
-    @click.option(
-        "--password",
-        prompt=True,
-        hide_input=True,
-        confirmation_prompt=True,
-        help="用户的密码",
-    )
-    @click.option("--email", prompt=True, help="用户的邮箱地址")
-    def add_user(username, password, email):
-        user = User.query.filter_by(**{"username": username}).first()
-        if user:
-            click.echo(f"用户: {username} 名字已存在.")
-            click.echo(f"开始更新{username} 用户信息: password: ******, email: {email}")
-            user.update({"email": email, "password": password})
-        else:
-            user = User(username=username, password=password, email=email)
-            user.save()
-            click.echo(f"用户: {username} 增加完成.")
-
     @app.cli.command
     @click.option("--post", default=50, help="增加 posts, 默认是 50 条")
     def forge(post):
