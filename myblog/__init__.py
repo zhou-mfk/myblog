@@ -3,6 +3,7 @@ __all__ = ["Post", "Admin", "Category", "Comment"]
 
 import click
 from flask import Flask, render_template
+from sqlalchemy import select
 
 from config import config
 from myblog.blueprints.admin import admin_bp
@@ -39,6 +40,8 @@ def create_app(config_name: str | None):
     register_commands(app)
     if config_name != "test":
         register_errors(app)
+
+    register_template_context(app)
 
     return app
 
@@ -120,3 +123,11 @@ def register_errors(app: Flask) -> None:
     # @app.errorhandler(CSRFError)
     # def handle_csrf_error(e):
     #     return render_template("error/400.html", description=e.description), 400
+
+
+def register_template_context(app: Flask):
+    @app.context_processor
+    def make_template_context():
+        admin = db.session.execute(select(Admin)).first()
+        categories = db.session.execute(select(Category).order_by(Category.name)).all()
+        return dict(admin=admin, categories=categories)

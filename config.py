@@ -22,7 +22,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     # 使用 mysql 数据库
     SQLALCHEMY_DATABASE_URI = "mysql+pymysql://admin:redhat@localhost/myblog"
-    SQLALCHEMY_ECHO = True
+    SQLALCHEMY_ECHO = False
 
 
 class TestConfig(Config):
