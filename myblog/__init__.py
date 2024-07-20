@@ -64,12 +64,43 @@ def register_blueprints(app: Flask) -> None:
 
 def register_commands(app: Flask) -> None:
     # 添加用户
-    @app.cli.command
+    @app.cli.command("forge")
+    @click.option(
+        "--category", default=10, help="Quantify of categories, default is 10."
+    )
     @click.option("--post", default=50, help="增加 posts, 默认是 50 条")
-    def forge(post):
+    @click.option("--comment", default=500, help="生成评论， 默认是500条")
+    @click.option("--reply", default=50, help="回复评论")
+    def forge(category, post, comment, reply):
         """Generate fake data"""
-        # TODO: 生成假数据
-        pass
+        from myblog.fakes import (
+            fake_admin,
+            fake_categories,
+            fake_comment,
+            fake_posts,
+            fake_replies,
+        )
+
+        # 生成假数据
+        db.drop_all()
+        db.create_all()
+
+        click.echo("admin user")
+        fake_admin()
+
+        click.echo("Categories")
+        fake_categories(category)
+
+        click.echo("Posts")
+        fake_posts(post)
+
+        click.echo("comment")
+        fake_comment(comment)
+
+        click.echo("gen reply")
+        fake_replies(reply)
+
+        click.echo("Done.")
 
 
 def register_errors(app: Flask) -> None:

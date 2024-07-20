@@ -1,5 +1,5 @@
 import datetime
-from typing import Dict
+from typing import Dict, List, Optional
 
 from sqlalchemy import ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -53,7 +53,7 @@ class Admin(BaseModel):
     __tablename__ = "admin"
 
     username: Mapped[str] = mapped_column(String(20))
-    password_hash: Mapped[str] = mapped_column(String(128))
+    password_hash: Mapped[str] = mapped_column(String(256))
     blog_title: Mapped[str] = mapped_column(String(60))
     blog_sub_title: Mapped[str] = mapped_column(String(100))
     name: Mapped[str] = mapped_column(String(30))
@@ -75,20 +75,20 @@ class Category(BaseModel):
     __tablename__ = "category"
     name: Mapped[str] = mapped_column(String(30), unique=True)
 
-    posts: Mapped["Post"] = relationship(back_populates="category")
+    posts: Mapped[List["Post"]] = relationship("Post", back_populates="category")
 
 
 class Post(BaseModel):
     __tablename__ = "posts"
 
-    title: Mapped[str] = mapped_column(String(60))
+    title: Mapped[str] = mapped_column(String(100))
     body: Mapped[str] = mapped_column(Text)
     # 关联分类
     category_id: Mapped[int] = mapped_column(ForeignKey("category.id"))
 
     category: Mapped["Category"] = relationship(back_populates="posts")
-    comments: Mapped["Comment"] = relationship(
-        back_populates="post", cascade="all"
+    comments: Mapped[List["Comment"]] = relationship(
+        "Comment", back_populates="post", cascade="all"
     )  # 级联删除
 
 
@@ -106,6 +106,8 @@ class Comment(BaseModel):
     post: Mapped["Post"] = relationship(back_populates="comments")
 
     # 邻接表列关系  即评论的评论
-    replied_id: Mapped[int] = mapped_column(ForeignKey("comments.id"))
-    replieds: Mapped["Comment"] = relationship(back_populates="replied", cascade="all")
-    replied = relationship("Comment", back_populates="replieds", remote_side=[id])  # type: ignore
+    replied_id: Mapped[Optional[int]] = mapped_column(ForeignKey("comments.id"))
+    replied: Mapped["Comment"] = relationship(back_populates="replieds", remote_side="Comment.id")  # type: ignore
+    replieds: Mapped[List["Comment"]] = relationship(
+        "Comment", back_populates="replied", cascade="all"
+    )
