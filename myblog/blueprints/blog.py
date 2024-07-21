@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, current_app, render_template, request
 from sqlalchemy import select
 
 from myblog.ext import db
@@ -9,8 +9,15 @@ blog_bp = Blueprint("blog", __name__)
 
 @blog_bp.route("/")
 def index():
-    posts = db.session.execute(select(Post).order_by(Post.created_at.desc())).scalars()
-    return render_template("blog/index.html", posts=posts)
+    page = request.args.get("page", 1, type=int)
+    per_page = current_app.config["BLOG_POST_PER_PAGE"]
+    pagination = db.paginate(
+        select(Post).order_by(Post.created_at.desc()),
+        page=page,
+        per_page=per_page,
+    )
+    posts = pagination.items
+    return render_template("blog/index.html", pagination=pagination, posts=posts)
 
 
 @blog_bp.route("/about")
