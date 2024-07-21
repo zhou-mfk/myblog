@@ -136,6 +136,26 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "bootstrap-flask"
+version = "2.4.0"
+description = "Bootstrap 4 & 5 helper for your Flask projects."
+optional = false
+python-versions = "*"
+files = [
+    {file = "Bootstrap-Flask-2.4.0.tar.gz", hash = "sha256:3f7aa1b8be31e182fa2eaff2580e9b66aa9fad14f1a35e5c03d486169fb6c1a1"},
+    {file = "Bootstrap_Flask-2.4.0-py3-none-any.whl", hash = "sha256:bd5084bcb1557e85db799aa9d70b153cb13a3895ea871603dbf242cd05894b90"},
+]
+
+[package.dependencies]
+Flask = "*"
+WTForms = "*"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "cachetools"
 version = "5.3.3"
 description = "Extensible memoizing collections and decorators"
@@ -1599,4 +1619,4 @@ reference = "tsinghua"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "1993285234dacbdc8f9d5504f8b83af969e9330371aa64373f7204be7a901e94"
+content-hash = "dac6319ed6b0650aa0fb8a6df22be7e51ba277abb05d473185aae64f30540a12"

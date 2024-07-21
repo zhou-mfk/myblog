@@ -1,11 +1,16 @@
 from flask import Blueprint, render_template
+from sqlalchemy import select
+
+from myblog.ext import db
+from myblog.models import Post
 
 blog_bp = Blueprint("blog", __name__)
 
 
 @blog_bp.route("/")
 def index():
-    return render_template("blog/index.html")
+    posts = db.session.execute(select(Post).order_by(Post.created_at.desc())).scalars()
+    return render_template("blog/index.html", posts=posts)
 
 
 @blog_bp.route("/about")

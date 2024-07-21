@@ -19,6 +19,7 @@ flask-moment = "^1.0.6"
 flask-wtf = "^1.2.1"
 bleach = "^6.1.0"
 faker = "^26.0.0"
+bootstrap-flask = "^2.4.0"
 
 
 [tool.poetry.group.dev.dependencies]

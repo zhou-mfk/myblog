@@ -22,10 +22,8 @@
 
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    {{ render_nav_item('blog.index', 'Home') }}
-                    {{ render_nav_item('blog.about', 'About') }}
-                </li>
+                {{ render_nav_item('blog.index', 'Home') }}
+                {{ render_nav_item('blog.about', 'About') }}
             </ul>
         </div>
     </div>
@@ -34,7 +32,7 @@
 {% endblock nav %}
 
 <main class="container">
-    {% for message in get_flashed_messages(with_categoies=True) %}
+    {% for message in get_flashed_messages(with_categories=True) %}
     <div class="alert alert-{{message[0]}}" role="alert">
         <button type="button" class="close" data-dimiss="alert">&items;</button>
         {{ message[1]}}
@@ -43,9 +41,14 @@
     {%block content %} {% endblock content%}
     {% block footer %}
     <footer>
-        ...
+        <p class="float-left">
+            <small> &copy; 2018 <a href="http://greyli.com" title="Written by Grey Li">Grey Li</a> -
+                <a href="https://github.com/greyli/bluelog" title="Fork me on GitHub">GitHub</a> -
+                <a href="http://helloflask.com" title="A HelloFlask project">HelloFlask</a>
+            </small>
+        </p>
     </footer>
-    {%endblock footer}
+    {%endblock footer %}
 
 </main>
 
