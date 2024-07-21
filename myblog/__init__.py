@@ -129,5 +129,7 @@ def register_template_context(app: Flask):
     @app.context_processor
     def make_template_context():
         admin = db.session.execute(select(Admin)).first()
-        categories = db.session.execute(select(Category).order_by(Category.name)).all()
+        categories = db.session.execute(
+            select(Category).order_by(Category.name)
+        ).scalars()
         return dict(admin=admin, categories=categories)

@@ -1,8 +1,9 @@
-from flask import Blueprint, current_app, render_template, request
+from flask import Blueprint, abort, current_app, make_response, render_template, request
 from sqlalchemy import select
 
 from myblog.ext import db
 from myblog.models import Post
+from myblog.utils import redirect_back
 
 blog_bp = Blueprint("blog", __name__)
 
@@ -32,4 +33,15 @@ def show_category(category_id):
 
 @blog_bp.route("/post/<int:post_id>", methods=["GET", "POST"])
 def show_post(post_id):
-    return render_template("blog/post.html")
+    post = db.get_or_404(Post, post_id)
+
+    return render_template("blog/post.html", post=post)
+
+
+@blog_bp.route("/change_theme/<theme_name>")
+def change_theme(theme_name):
+    if theme_name not in current_app.config["BLOG_THEMES"].keys():
+        abort(404)
+    response = make_response(redirect_back())
+    response.set_cookie("theme", theme_name, max_age=30 * 24 * 60 * 60)
+    return response

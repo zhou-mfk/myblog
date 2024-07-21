@@ -17,6 +17,8 @@ class Config:
     BLOG_MANAGE_POST_PER_PAGE = 15
     BLOG_COMMENT_PER_PAGE = 15
 
+    BLOG_THEMES = {"perfect_blue": "Perfect Blue", "black_swan": "Black Swan"}
+
 
 class DevelopmentConfig(Config):
     DEBUG = True
