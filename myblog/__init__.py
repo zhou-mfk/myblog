@@ -5,12 +5,12 @@ import click
 from flask import Flask, render_template
 from sqlalchemy import select
 
-from config import config
 from myblog.blueprints.admin import admin_bp
 from myblog.blueprints.auth import auth_bp
 from myblog.blueprints.blog import blog_bp
 from myblog.ext import bootstrap, ckeditor, db, migrate, moment
 from myblog.models import Admin, Category, Comment, Post
+from myblog.settings import config
 
 
 def create_app(config_name: str | None):
