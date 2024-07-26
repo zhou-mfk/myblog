@@ -27,3 +27,15 @@ login_manager = LoginManager()
 migrate = Migrate()
 csrf = CSRFProtect()
 ckeditor = CKEditor()
+
+
+@login_manager.user_loader
+def load_user(user_id: int):
+    from myblog.models import Admin
+
+    user = db.session.get(Admin, user_id)
+    return user
+
+
+login_manager.login_view = "auth.login"
+login_manager.login_message_category = "warning"

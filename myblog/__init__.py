@@ -2,9 +2,10 @@ __all__ = ["Post", "Admin", "Category", "Comment"]
 
 from flask import Flask
 
+from myblog.blueprints.auth import auth_bp
 from myblog.blueprints.blog import blog_bp
 from myblog.config import config
-from myblog.ext import db, migrate
+from myblog.core.ext import db, migrate
 from myblog.models import Admin, Category, Comment, Post
 
 
@@ -21,6 +22,7 @@ def create_app(config_name: str = "dev"):
 
     # 注册蓝图
     app.register_blueprint(blog_bp)
+    app.register_blueprint(auth_bp, url_prefix="/auth")
     app.add_url_rule("/", endpoint="index")
 
     return app
