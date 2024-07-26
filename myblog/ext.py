@@ -1,5 +1,9 @@
+from flask_bootstrap import Bootstrap4  # type: ignore
+from flask_ckeditor import CKEditor  # type: ignore
+from flask_login import LoginManager  # type: ignore
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import CSRFProtect  # type: ignore
 from sqlalchemy import MetaData
 from sqlalchemy.orm import DeclarativeBase
 
@@ -18,4 +22,8 @@ class Base(DeclarativeBase):
 
 db = SQLAlchemy(model_class=Base)
 
+bootstrap = Bootstrap4()
+login_manager = LoginManager()
 migrate = Migrate()
+csrf = CSRFProtect()
+ckeditor = CKEditor()
