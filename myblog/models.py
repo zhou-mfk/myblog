@@ -1,12 +1,12 @@
 import datetime
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from sqlalchemy import ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing_extensions import Annotated
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from .ext import db
+from myblog.ext import db
 
 """设置类型映射"""
 
@@ -17,7 +17,7 @@ timestamp = Annotated[
 ]
 
 
-class BaseModel(db.Model):
+class BaseModel(db.Model):  # type: ignore
     """声明基类，用于公共模型, 以及公共查询"""
 
     __abstract__ = True
@@ -50,33 +50,74 @@ class BaseModel(db.Model):
                 db.session.rollback()
 
 
-class User(BaseModel):
-    __tablename__ = "users"
+class Admin(BaseModel):
+    __tablename__ = "admin"
 
-    username: Mapped[str] = mapped_column(String(128), doc="用户", nullable=True)
-    email: Mapped[str] = mapped_column(String(128))
-    password: Mapped[str] = mapped_column(Text, nullable=False)
+    username: Mapped[str] = mapped_column(String(20), doc="用户", nullable=True)
+    password_hash: Mapped[str] = mapped_column(String(256), nullable=False)
+    blog_title: Mapped[str] = mapped_column(String(60))
+    blog_sub_title: Mapped[str] = mapped_column(String(100))
+    name: Mapped[str] = mapped_column(String(30))
+    custom_footer: Mapped[Optional[str]] = mapped_column(Text)
+    custom_css: Mapped[Optional[str]] = mapped_column(Text)
+    custom_js: Mapped[Optional[str]] = mapped_column(Text)
 
-    posts: Mapped[List["Post"]] = relationship(
-        back_populates="user", cascade="all, delete-orphan"
-    )
+    @property
+    def password(self):
+        raise AttributeError("Write-only property")
 
-    def __init__(self, **kwargs) -> None:
-        self.username = kwargs.get("username")
-        self.email = kwargs.get("email")
-        self.password = generate_password_hash(kwargs.get("password"))
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def validate_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+
+class Category(BaseModel):
+    __tablename__ = "category"
+
+    name: Mapped[str] = mapped_column(String(30), unique=True)
+
+    posts: Mapped[List["Post"]] = relationship(back_populates="category")
 
 
 class Post(BaseModel):
-    __tablename__ = "posts"
+    __tablename__ = "post"
 
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    title: Mapped[str] = mapped_column(Text)
+    title: Mapped[str] = mapped_column(String(60))
     body: Mapped[str] = mapped_column(Text)
+    updated_at: Mapped[Optional[datetime.datetime]] = mapped_column(
+        onupdate=lambda: datetime.datetime.now(datetime.timezone.utc)
+    )
+    can_comment: Mapped[bool] = mapped_column(default=True)
 
-    user: Mapped["User"] = relationship(back_populates="posts")
+    category_id: Mapped[int] = mapped_column(ForeignKey("category.id"))
 
-    def __init__(self, **kwargs) -> None:
-        self.user_id = int(kwargs.get("user_id"))
-        self.title = kwargs.get("title")
-        self.body = kwargs.get("body")
+    category: Mapped["Category"] = relationship(back_populates="posts")
+
+    comments: Mapped[List["Comment"]] = relationship(
+        back_populates="post", cascade="all, delete-orphan"
+    )
+
+
+class Comment(BaseModel):
+    __tablename__ = "comment"
+
+    author: Mapped[str] = mapped_column(String(30))
+    email: Mapped[str] = mapped_column(String(255))
+    site: Mapped[Optional[str]] = mapped_column(String(255))
+    body: Mapped[str] = mapped_column(Text)
+    from_admin: Mapped[bool] = mapped_column(default=False)
+    reviewed: Mapped[bool] = mapped_column(default=False)
+
+    post_id: Mapped[int] = mapped_column(ForeignKey("post.id"))
+    post: Mapped["Post"] = relationship(back_populates="comments")
+
+    replied_id: Mapped[Optional[int]] = mapped_column(ForeignKey("comment.id"))
+    replies: Mapped[List["Comment"]] = relationship(
+        back_populates="replied", cascade="all, delete-orphan"
+    )
+    replied: Mapped["Comment"] = relationship(
+        back_populates="replies", remote_side="comment.id"
+    )

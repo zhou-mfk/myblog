@@ -26,7 +26,7 @@ class DevelopmentConfig(Config):
 
 class TestConfig(Config):
     # 使用 mysql 数据库
-    SQLALCHEMY_DATABASE_URI = "mysql+pymysql://admin:redhat@localhost/test_myblog"
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     SQLALCHEMY_ECHO = True
 
 

@@ -1,19 +1,18 @@
+__all__ = ["Post", "Admin", "Category", "Comment"]
+
 from flask import Flask
 
-from config import config
+from myblog.blueprints.blog import blog_bp
+from myblog.config import config
+from myblog.ext import db, migrate
+from myblog.models import Admin, Category, Comment, Post
 
-from . import blog
-from .ext import db, migrate
-from .models import Post, User
 
-
-def create_app(config_name: None):
+def create_app(config_name: str = "dev"):
     # 创建 Flask 程序实例
     app = Flask(__name__)
 
     # 使用对象的方式引入配置文件
-    if config_name is None:
-        config_name = "devlopment"
     app.config.from_object(config[config_name])
 
     # 引入扩展
@@ -21,7 +20,7 @@ def create_app(config_name: None):
     migrate.init_app(app, db)
 
     # 注册蓝图
-    app.register_blueprint(blog.bp)
+    app.register_blueprint(blog_bp)
     app.add_url_rule("/", endpoint="index")
 
     return app
