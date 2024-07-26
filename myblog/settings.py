@@ -13,6 +13,8 @@ class Config:
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True  # 是否自动提交到数据库
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    # blog settings
+
 
 class DevelopmentConfig(Config):
     DEBUG = True

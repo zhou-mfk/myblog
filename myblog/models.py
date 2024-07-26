@@ -1,6 +1,7 @@
 import datetime
 from typing import Dict, List, Optional
 
+from flask_login import UserMixin  # type: ignore
 from sqlalchemy import ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing_extensions import Annotated
@@ -50,17 +51,21 @@ class BaseModel(db.Model):  # type: ignore
                 db.session.rollback()
 
 
-class Admin(BaseModel):
+class Admin(BaseModel, UserMixin):
     __tablename__ = "admin"
 
-    username: Mapped[str] = mapped_column(String(20), doc="用户", nullable=True)
-    password_hash: Mapped[str] = mapped_column(String(256), nullable=False)
+    username: Mapped[str] = mapped_column(String(20))
+    password_hash: Mapped[str] = mapped_column(String(256))
     blog_title: Mapped[str] = mapped_column(String(60))
     blog_sub_title: Mapped[str] = mapped_column(String(100))
     name: Mapped[str] = mapped_column(String(30))
+    about: Mapped[str] = mapped_column(Text)
     custom_footer: Mapped[Optional[str]] = mapped_column(Text)
     custom_css: Mapped[Optional[str]] = mapped_column(Text)
     custom_js: Mapped[Optional[str]] = mapped_column(Text)
+
+    def __repr__(self):
+        return f"<Admin: {self.username}"
 
     @property
     def password(self):
@@ -116,8 +121,8 @@ class Comment(BaseModel):
 
     replied_id: Mapped[Optional[int]] = mapped_column(ForeignKey("comment.id"))
     replies: Mapped[List["Comment"]] = relationship(
-        back_populates="replied", cascade="all, delete-orphan"
+        "Comment", back_populates="replied", cascade="all, delete-orphan"
     )
     replied: Mapped["Comment"] = relationship(
-        back_populates="replies", remote_side="comment.id"
+        "Comment", back_populates="replies", remote_side="Comment.id"
     )

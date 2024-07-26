@@ -16,6 +16,7 @@ bootstrap-flask = "^2.4.0"
 flask-wtf = "^1.2.1"
 flask-ckeditor = "^1.0.0"
 flask-login = "^0.6.3"
+faker = "^26.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
