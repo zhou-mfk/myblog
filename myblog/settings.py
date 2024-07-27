@@ -14,6 +14,21 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # blog settings
+    POST_PER_PAGE = 10
+    MANAGE_POST_PER_PAGE = 15
+    COMMENT_PER_PAGE = 15
+
+    ENABLE_CSRF = True
+    FILE_UPLOADER = "admin.upload_image"
+
+    THEMES = {"default": "Default", "perfect_blue": "Perfect Blue"}
+
+    SLOW_QUERY_THRESHOLD = 1
+
+    UPLOAD_PATH = os.getenv("UPLOAD_PATH", f"{basedir}/uploads")
+    ALLOWED_IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "gif"]
+    LOGGING_PATH = os.getenv("GREYBOOK_LOGGING_PATH", f"{basedir}/logs/myblog.log")
+    ERROR_EMAIL_SUBJECT = "[MYBLOG] Application Error"
 
 
 class DevelopmentConfig(Config):

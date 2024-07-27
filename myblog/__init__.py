@@ -2,10 +2,12 @@ __all__ = ["Post", "Admin", "Category", "Comment"]
 
 from flask import Flask
 
+from myblog.blueprints.admin import admin_bp
 from myblog.blueprints.auth import auth_bp
 from myblog.blueprints.blog import blog_bp
 from myblog.core.commands import register_commands
 from myblog.core.ext import bootstrap, ckeditor, csrf, db, login_manager, migrate
+from myblog.core.templating import register_template_handlers
 from myblog.models import Admin, Category, Comment, Post
 from myblog.settings import config
 
@@ -20,6 +22,7 @@ def create_app(config_name: str = "dev"):
     # 注册蓝图
     app.register_blueprint(blog_bp)
     app.register_blueprint(auth_bp, url_prefix="/auth")
+    app.register_blueprint(admin_bp, url_prefix="/admin")
     app.add_url_rule("/", endpoint="index")
 
     # 引入扩展
@@ -34,7 +37,7 @@ def create_app(config_name: str = "dev"):
     # register_logging(app)
     register_commands(app)
     # register_errors(app)
-    # register_template_handlers(app)
+    register_template_handlers(app)
     # register_request_handlers(app)
     # register_shell_handlers(app)
 
